@@ -1,0 +1,121 @@
+name: Publish Docker Hub image
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  # Per release: a shared group keeps only one pending run and would cancel the others.
+  group: docker-hub-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      image: ${{ steps.config.outputs.image }}
+      version: ${{ steps.config.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+      - name: Validate release and image configuration
+        id: config
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          DOCKERHUB_USERNAME: geniucker
+        run: |
+          version=$(bun run check:version)
+          image=$DOCKERHUB_USERNAME/codex-rc-bridge
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+
+  image:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            platform: linux/amd64
+            arch: amd64
+          - runner: ubuntu-24.04-arm
+            platform: linux/arm64
+            arch: arm64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          persist-credentials: false
+      - uses: docker/setup-buildx-action@v4
+      - name: Test native Linux build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          target: test
+          platforms: ${{ matrix.platform }}
+          cache-from: type=gha,scope=docker-${{ matrix.arch }}
+          cache-to: type=gha,scope=docker-${{ matrix.arch }},mode=max
+      - uses: docker/login-action@v4
+        with:
+          username: geniucker
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Push server image by digest
+        id: build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          target: server
+          platforms: ${{ matrix.platform }}
+          outputs: type=image,name=${{ needs.prepare.outputs.image }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=docker-${{ matrix.arch }}
+          cache-to: type=gha,scope=docker-${{ matrix.arch }},mode=max
+      - name: Export digest
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          mkdir -p /tmp/digests
+          touch "/tmp/digests/${DIGEST#sha256:}"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: docker-digest-${{ matrix.arch }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: [prepare, image]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: docker-digest-*
+          path: /tmp/digests
+          merge-multiple: true
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
+        with:
+          username: geniucker
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Publish multi-platform tags
+        working-directory: /tmp/digests
+        env:
+          IMAGE: ${{ needs.prepare.outputs.image }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+          PRERELEASE: ${{ github.event.release.prerelease }}
+        run: |
+          tags=(-t "$IMAGE:$VERSION")
+          if [[ "$PRERELEASE" == false && "$VERSION" != *-* ]]; then tags+=(-t "$IMAGE:latest"); fi
+          sources=()
+          for digest in *; do sources+=("$IMAGE@sha256:$digest"); done
+          docker buildx imagetools create "${tags[@]}" "${sources[@]}"
+          docker buildx imagetools inspect "$IMAGE:$VERSION"

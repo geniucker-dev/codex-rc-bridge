@@ -1,0 +1,27 @@
+[Unit]
+Description=Codex RC Bridge management and relay
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=codex-bridge
+Group=codex-bridge
+WorkingDirectory=/var/lib/codex-rc-bridge
+EnvironmentFile=/etc/codex-rc-bridge/server.env
+ExecStart=/opt/codex-rc-bridge/bin/bridge-server
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGTERM
+# Stop waits for accepted mutations and joined workers; do not force-kill halfway through cleanup.
+TimeoutStopSec=infinity
+StateDirectory=codex-rc-bridge
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+
+[Install]
+WantedBy=multi-user.target

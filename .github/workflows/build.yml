@@ -1,0 +1,136 @@
+name: Build and release
+
+on:
+  pull_request:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+env:
+  CARGO_TERM_COLOR: always
+  RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+      - run: sudo apt-get update && sudo apt-get install -y cmake clang pkg-config libssl-dev
+      - run: rustup show
+      - run: bun install --frozen-lockfile
+      - run: bun run check:version
+      - run: cargo test --workspace --locked
+      - run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - run: bun run build
+      - run: bun test tests/package-server.test.ts tests/release-version.test.ts
+      - run: bun tests/identity-vectors.ts
+      - run: bun --bun ui/node_modules/@playwright/test/cli.js install --with-deps chromium
+      - run: bun run --cwd ui test:e2e
+
+  desktop:
+    needs: checks
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+          - runner: macos-15-intel
+            arch: x64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+      - run: rustup show
+      - run: brew install cmake
+      - run: bun install --frozen-lockfile
+      - run: cargo test --workspace --locked
+      - run: bun run package:desktop
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-desktop-${{ matrix.arch }}
+          path: dist/desktop/*
+          if-no-files-found: error
+          retention-days: 14
+
+  server:
+    if: github.event_name != 'pull_request'
+    needs: checks
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-22.04
+            arch: x64
+          - runner: ubuntu-22.04-arm
+            arch: arm64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+      - run: sudo apt-get update && sudo apt-get install -y cmake clang pkg-config libssl-dev
+      - run: rustup show
+      - run: bun install --frozen-lockfile
+      - run: bun run check:version
+      - run: bun run package:server
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-server-${{ matrix.arch }}
+          path: dist/server/*
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: [checks, desktop, server]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: release-*
+          path: release-assets
+          merge-multiple: true
+      - name: Add Compose files pinned to this release
+        run: |
+          image="geniucker/codex-rc-bridge:${RELEASE_TAG#v}"
+          sed "s|geniucker/codex-rc-bridge:latest|$image|" compose.yaml > release-assets/compose.yaml
+          grep -qF ":-$image}" release-assets/compose.yaml
+          cp deploy/compose.env.example release-assets/
+      - name: Create draft and attach packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft > release-state; then
+            test "$(cat release-state)" = true || { echo 'Refusing to overwrite a published release'; exit 1; }
+          else
+            args=()
+            if [[ "$RELEASE_TAG" == *-* ]]; then args+=(--prerelease); fi
+            gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG" \
+              --notes-file .github/release-notes.md "${args[@]}"
+          fi
+          gh release upload "$RELEASE_TAG" release-assets/* --clobber

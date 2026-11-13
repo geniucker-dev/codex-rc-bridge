@@ -1,0 +1,28 @@
+{
+  "name": "codex-rc-bridge",
+  "private": true,
+  "license": "MPL-2.0",
+  "packageManager": "bun@1.3.11",
+  "workspaces": [
+    "ui"
+  ],
+  "scripts": {
+    "dev": "bun run --cwd ui dev",
+    "build": "bun run --cwd ui build",
+    "check": "bun run --cwd ui check",
+    "bridge:setup": "cargo run -p bridge-server --bin bridge-admin --locked -- setup",
+    "bridge:start": "cargo run -p bridge-server --bin bridge-admin --locked -- start",
+    "bridge:manage": "cargo run -p bridge-server --bin bridge-admin --locked -- manage",
+    "acceptance": "bun scripts/acceptance.ts",
+    "package:server": "bun scripts/package-server.ts",
+    "package:desktop": "bun scripts/package-desktop.ts",
+    "check:version": "bun scripts/check-version.ts",
+    "test:container": "bun run --cwd ui test:container",
+    "desktop:dev": "bun --bun tauri dev --config crates/bridge-desktop/tauri.conf.json",
+    "desktop:build": "bun --bun tauri build --config crates/bridge-desktop/tauri.conf.json"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.4",
+    "prettier": "3.9.10"
+  }
+}

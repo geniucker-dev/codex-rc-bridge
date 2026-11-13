@@ -1,0 +1,6 @@
+# Caddy on the host terminates TLS and forwards the whole site to the bridge.
+# Replace the hostname to match BRIDGE_PUBLIC_ORIGIN. Caddy keeps the original Host
+# header and streams server-sent events without extra settings.
+bridge.example.com {
+    reverse_proxy 127.0.0.1:8787
+}

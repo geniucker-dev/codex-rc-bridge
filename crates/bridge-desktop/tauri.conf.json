@@ -1,0 +1,43 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Codex RC Bridge",
+  "version": "0.2.0",
+  "identifier": "com.geniucker.codex-rc-bridge",
+  "build": {
+    "beforeDevCommand": {
+      "script": "bun run dev --port 15174 --strictPort",
+      "cwd": "../.."
+    },
+    "devUrl": "http://localhost:15174",
+    "beforeBuildCommand": { "script": "bun run build", "cwd": "../.." },
+    "frontendDist": "../../ui/dist",
+    "features": ["app"]
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Codex RC Bridge",
+        "width": 1120,
+        "height": 780,
+        "minWidth": 640,
+        "minHeight": 480
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src ipc: http://ipc.localhost; object-src 'none'; frame-src 'none'"
+    }
+  },
+  "bundle": {
+    "license": "MPL-2.0",
+    "active": true,
+    "targets": ["app"],
+    "macOS": { "signingIdentity": "-" },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}

@@ -1,0 +1,326 @@
+{
+  "date": "2026-11-08",
+  "environment": {
+    "os": "macOS 27.0.1 (26A434)",
+    "arch": "aarch64",
+    "rust": "1.99.1",
+    "cargo": "1.99.1",
+    "storage": "macOS temporary directory on local Data volume; not a container or RAM-backed fixture",
+    "execution": "one release run, sequential scenarios; no concurrent project build or test during measurement; ordinary host applications remained running"
+  },
+  "method": "../STORAGE.md#负载与测量边界",
+  "results": [
+    {
+      "arch": "aarch64",
+      "claim": {
+        "count": 120,
+        "max_ms": 18.37125,
+        "p50_ms": 10.364917,
+        "p95_ms": 14.054333,
+        "p99_ms": 16.546417
+      },
+      "connections": 1,
+      "credential_write": {
+        "count": 20,
+        "max_ms": 12.685208,
+        "p50_ms": 9.9285,
+        "p95_ms": 12.499458,
+        "p99_ms": 12.685208
+      },
+      "db_bytes_after": 229376,
+      "db_bytes_before": 172032,
+      "fullfsync": true,
+      "history_rows": 0,
+      "journal": "delete",
+      "mixed_elapsed_seconds": 1.476449208,
+      "mixed_ops_per_second": 135.46012887969255,
+      "operations": 200,
+      "os": "macos",
+      "probe_acquire": {
+        "count": 64,
+        "max_ms": 0.245542,
+        "p50_ms": 0.068958,
+        "p95_ms": 0.144375,
+        "p99_ms": 0.245542
+      },
+      "probe_commit": {
+        "count": 64,
+        "max_ms": 14.868416,
+        "p50_ms": 7.861291,
+        "p95_ms": 10.563375,
+        "p99_ms": 14.868416
+      },
+      "profile": "release",
+      "protected_read": {
+        "count": 60,
+        "max_ms": 0.36595900000000003,
+        "p50_ms": 0.127,
+        "p95_ms": 0.272792,
+        "p99_ms": 0.36595900000000003
+      },
+      "sqlite": "3.46.0",
+      "synchronous": "extra",
+      "workers": 1
+    },
+    {
+      "arch": "aarch64",
+      "claim": {
+        "count": 960,
+        "max_ms": 101.701667,
+        "p50_ms": 52.350750000000005,
+        "p95_ms": 70.1105,
+        "p99_ms": 78.375791
+      },
+      "connections": 1,
+      "credential_write": {
+        "count": 160,
+        "max_ms": 105.25474999999999,
+        "p50_ms": 56.043375,
+        "p95_ms": 75.744833,
+        "p99_ms": 80.22533399999999
+      },
+      "db_bytes_after": 671744,
+      "db_bytes_before": 184320,
+      "fullfsync": true,
+      "history_rows": 0,
+      "journal": "delete",
+      "mixed_elapsed_seconds": 10.446620333,
+      "mixed_ops_per_second": 153.15958166352937,
+      "operations": 1600,
+      "os": "macos",
+      "probe_acquire": {
+        "count": 512,
+        "max_ms": 83.453666,
+        "p50_ms": 61.997875,
+        "p95_ms": 72.10158299999999,
+        "p99_ms": 78.045209
+      },
+      "probe_commit": {
+        "count": 512,
+        "max_ms": 14.851333,
+        "p50_ms": 7.991,
+        "p95_ms": 10.564874999999999,
+        "p99_ms": 11.977125
+      },
+      "profile": "release",
+      "protected_read": {
+        "count": 480,
+        "max_ms": 92.27033399999999,
+        "p50_ms": 47.467334,
+        "p95_ms": 61.236958,
+        "p99_ms": 68.79566700000001
+      },
+      "sqlite": "3.46.0",
+      "synchronous": "extra",
+      "workers": 8
+    },
+    {
+      "arch": "aarch64",
+      "claim": {
+        "count": 3840,
+        "max_ms": 368.275666,
+        "p50_ms": 211.985334,
+        "p95_ms": 247.12404199999997,
+        "p99_ms": 266.927209
+      },
+      "connections": 1,
+      "credential_write": {
+        "count": 640,
+        "max_ms": 367.31141699999995,
+        "p50_ms": 215.011667,
+        "p95_ms": 251.09525,
+        "p99_ms": 278.105042
+      },
+      "db_bytes_after": 2158592,
+      "db_bytes_before": 225280,
+      "fullfsync": true,
+      "history_rows": 0,
+      "journal": "delete",
+      "mixed_elapsed_seconds": 42.363124834,
+      "mixed_ops_per_second": 151.07478556122607,
+      "operations": 6400,
+      "os": "macos",
+      "probe_acquire": {
+        "count": 2048,
+        "max_ms": 428.699083,
+        "p50_ms": 302.760917,
+        "p95_ms": 343.75766600000003,
+        "p99_ms": 403.45333300000004
+      },
+      "probe_commit": {
+        "count": 2048,
+        "max_ms": 58.542457999999996,
+        "p50_ms": 8.818249999999999,
+        "p95_ms": 11.307375,
+        "p99_ms": 14.332625
+      },
+      "profile": "release",
+      "protected_read": {
+        "count": 1920,
+        "max_ms": 355.502792,
+        "p50_ms": 207.80075,
+        "p95_ms": 243.22454199999999,
+        "p99_ms": 265.01054200000004
+      },
+      "sqlite": "3.46.0",
+      "synchronous": "extra",
+      "workers": 32
+    },
+    {
+      "arch": "aarch64",
+      "claim": {
+        "count": 120,
+        "max_ms": 58.043458,
+        "p50_ms": 31.086167,
+        "p95_ms": 38.272124999999996,
+        "p99_ms": 42.59462499999999
+      },
+      "connections": 1,
+      "credential_write": {
+        "count": 20,
+        "max_ms": 37.685292000000004,
+        "p50_ms": 31.034917,
+        "p95_ms": 36.768833,
+        "p99_ms": 37.685292000000004
+      },
+      "db_bytes_after": 32534528,
+      "db_bytes_before": 32477184,
+      "fullfsync": true,
+      "history_rows": 100000,
+      "journal": "delete",
+      "mixed_elapsed_seconds": 3.824208042,
+      "mixed_ops_per_second": 52.29840997233068,
+      "operations": 200,
+      "os": "macos",
+      "probe_acquire": {
+        "count": 64,
+        "max_ms": 0.371375,
+        "p50_ms": 0.061958000000000006,
+        "p95_ms": 0.11025,
+        "p99_ms": 0.371375
+      },
+      "probe_commit": {
+        "count": 64,
+        "max_ms": 50.426375,
+        "p50_ms": 29.345334,
+        "p95_ms": 37.385791000000005,
+        "p99_ms": 50.426375
+      },
+      "profile": "release",
+      "protected_read": {
+        "count": 60,
+        "max_ms": 0.299333,
+        "p50_ms": 0.101125,
+        "p95_ms": 0.25408400000000003,
+        "p99_ms": 0.299333
+      },
+      "sqlite": "3.46.0",
+      "synchronous": "extra",
+      "workers": 1
+    },
+    {
+      "arch": "aarch64",
+      "claim": {
+        "count": 960,
+        "max_ms": 255.984959,
+        "p50_ms": 67.14904200000001,
+        "p95_ms": 216.677792,
+        "p99_ms": 235.03199999999998
+      },
+      "connections": 1,
+      "credential_write": {
+        "count": 160,
+        "max_ms": 247.614917,
+        "p50_ms": 70.710541,
+        "p95_ms": 216.26416700000001,
+        "p99_ms": 225.123042
+      },
+      "db_bytes_after": 32776192,
+      "db_bytes_before": 32313344,
+      "fullfsync": true,
+      "history_rows": 100000,
+      "journal": "delete",
+      "mixed_elapsed_seconds": 19.89749025,
+      "mixed_ops_per_second": 80.41215147724472,
+      "operations": 1600,
+      "os": "macos",
+      "probe_acquire": {
+        "count": 512,
+        "max_ms": 88.178458,
+        "p50_ms": 65.952208,
+        "p95_ms": 76.654,
+        "p99_ms": 85.61475
+      },
+      "probe_commit": {
+        "count": 512,
+        "max_ms": 25.899874999999998,
+        "p50_ms": 8.623624999999999,
+        "p95_ms": 10.783875,
+        "p99_ms": 14.711583000000001
+      },
+      "profile": "release",
+      "protected_read": {
+        "count": 480,
+        "max_ms": 247.858666,
+        "p50_ms": 62.334374999999994,
+        "p95_ms": 194.001,
+        "p99_ms": 220.94975
+      },
+      "sqlite": "3.46.0",
+      "synchronous": "extra",
+      "workers": 8
+    },
+    {
+      "arch": "aarch64",
+      "claim": {
+        "count": 3840,
+        "max_ms": 792.577042,
+        "p50_ms": 211.016333,
+        "p95_ms": 249.02270800000002,
+        "p99_ms": 580.872167
+      },
+      "connections": 1,
+      "credential_write": {
+        "count": 640,
+        "max_ms": 792.958958,
+        "p50_ms": 215.89979200000002,
+        "p95_ms": 251.96529099999998,
+        "p99_ms": 592.722125
+      },
+      "db_bytes_after": 34045952,
+      "db_bytes_before": 32157696,
+      "fullfsync": true,
+      "history_rows": 100000,
+      "journal": "delete",
+      "mixed_elapsed_seconds": 43.538503667,
+      "mixed_ops_per_second": 146.99632419501083,
+      "operations": 6400,
+      "os": "macos",
+      "probe_acquire": {
+        "count": 2048,
+        "max_ms": 445.09337500000004,
+        "p50_ms": 259.18362499999995,
+        "p95_ms": 324.874,
+        "p99_ms": 424.7185
+      },
+      "probe_commit": {
+        "count": 2048,
+        "max_ms": 30.88925,
+        "p50_ms": 7.937375,
+        "p95_ms": 10.976417,
+        "p99_ms": 15.100959000000001
+      },
+      "profile": "release",
+      "protected_read": {
+        "count": 1920,
+        "max_ms": 740.327625,
+        "p50_ms": 208.178916,
+        "p95_ms": 246.763167,
+        "p99_ms": 578.118542
+      },
+      "sqlite": "3.46.0",
+      "synchronous": "extra",
+      "workers": 32
+    }
+  ]
+}

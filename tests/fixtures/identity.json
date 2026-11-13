@@ -1,0 +1,10 @@
+{
+  "seed_hex": "0707070707070707070707070707070707070707070707070707070707070707",
+  "tenant_id": "00000000-0000-0000-0000-000000000001",
+  "workspace_id": "workspace-example",
+  "user_id": "user-example",
+  "name": "desk",
+  "in_id": "4475b0fa-6340-8ff9-bb00-e37dcdcc48ab",
+  "out_id": "701eed2a-3c98-8f8e-81c7-c097e05828b2",
+  "public_key_hex": "049a7cbf0f4edb707842c985b3397fc2fda9a3ecdc2a7c3886a3366079d50e3b17c4ee45e885e3c259bdec404ceed083db87f0491b7fd04927872db2954b74e6b4"
+}

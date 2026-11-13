@@ -1,0 +1,36 @@
+# Rust / frontend build output
+/target/
+/crates/bridge-desktop/gen/
+node_modules/
+dist/
+.vite/
+coverage/
+playwright-report/
+test-results/
+
+# Local settings and secrets
+.env
+.env.*
+!.env.example
+.DS_Store
+*.log
+/local-state/
+/secrets/
+
+# Existing local PoC artifacts; excluded from the rewrite
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+.pytest_cache/
+.uv-cache/
+
+# Local investigation / workspace metadata
+/bad-ref/
+/capture/
+/investigation.cany/
+/inbox/
+/craft.json
+/feed.json
+/usage.json
