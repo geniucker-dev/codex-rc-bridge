@@ -23,6 +23,7 @@ const files = [
   ["LICENSE", "LICENSE"],
   ["README.md", "README.md"],
   ["README_zh.md", "README_zh.md"],
+  ["docs/assets", "docs/assets"],
   ["docs/guide/server.md", "docs/guide/server.md"],
   ["docs/guide/server.zh.md", "docs/guide/server.zh.md"],
   // The READMEs link to these, so ship them to keep every link working.

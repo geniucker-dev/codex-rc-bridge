@@ -8,6 +8,8 @@ The bridge serves its management page and API itself, over plain HTTP on the hos
 
 ## Reverse proxy
 
+![Browser accesses the host reverse proxy over HTTPS; the proxy forwards HTTP through 127.0.0.1:8787 to the bridge container](../assets/server-deployment.en.svg)
+
 Whatever proxy you use has to do three things:
 
 - forward every path to the bridge, `127.0.0.1:8787` by default;

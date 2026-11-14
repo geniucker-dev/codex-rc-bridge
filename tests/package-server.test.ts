@@ -1,7 +1,7 @@
 import { test, expect } from "bun:test";
-import { mkdtemp, rm, symlink } from "node:fs/promises";
+import { cp, mkdtemp, rm, symlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { assemble } from "../scripts/package-server";
 
 test("server bundle includes only release files and rejects linked assets", async () => {
@@ -27,8 +27,18 @@ test("server bundle includes only release files and rejects linked assets", asyn
       "docs/guide/development.md",
       "docs/guide/development.zh.md",
     ]) {
-      await Bun.write(join(root, name), `synthetic ${name}`);
+      await Bun.write(
+        join(root, name),
+        name.endsWith(".md")
+          ? await Bun.file(new URL(`../${name}`, import.meta.url)).bytes()
+          : `synthetic ${name}`,
+      );
     }
+    await cp(
+      new URL("../docs/assets", import.meta.url),
+      join(root, "docs/assets"),
+      { recursive: true },
+    );
     await Bun.write(
       join(root, "secrets/master.key"),
       "SYNTHETIC-NOT-FOR-PACKAGE",
@@ -38,7 +48,17 @@ test("server bundle includes only release files and rejects linked assets", asyn
       "SYNTHETIC-PRIVATE-STATE",
     );
     const manifest = await assemble(root, join(temp, "package"));
-    expect(manifest).toHaveLength(17);
+    // Check the real guides, so adding an image cannot leave the bundle broken.
+    let imageReferences = 0;
+    for (const file of manifest.filter((file) => file.path.endsWith(".md"))) {
+      const contents = await Bun.file(join(temp, "package", file.path)).text();
+      for (const match of contents.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)) {
+        imageReferences++;
+        const image = join(temp, "package", dirname(file.path), match[1]!);
+        expect(await Bun.file(image).exists()).toBe(true);
+      }
+    }
+    expect(imageReferences).toBeGreaterThan(0);
     expect(
       manifest.some(
         (file) =>

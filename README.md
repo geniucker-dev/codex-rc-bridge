@@ -6,6 +6,10 @@ Use Codex Remote Control across different ChatGPT accounts.
 
 Say your phone is signed in to your personal account, while Codex on your work computer uses another one. ChatGPT's own remote control only reaches computers on the same account. Codex RC Bridge relays between the two accounts, so ChatGPT on your phone, tablet or computer can open that computer as if it were your own.
 
+![Remote control page with a connected iPad and MacBook Pro, plus a stopped desktop connection](docs/assets/remote-control.en.png)
+
+Example with fictional accounts and devices. The first connection is running; the second is stopped.
+
 ## Unofficial project
 
 Codex RC Bridge is an independent open-source project. OpenAI doesn't make, endorse or support it. It talks to ChatGPT through the remote control interfaces that the official apps use, and OpenAI hasn't published those for other software. OpenAI can change or block them at any time, so the bridge may stop working without warning. You use it at your own risk and remain bound by OpenAI's terms.
@@ -17,6 +21,8 @@ The bridge keeps the sign-ins of every account you add, encrypted with a key sto
 When you delete a controller or controlled device, the bridge revokes its access with ChatGPT; if that fails, it stays stopped until cleanup succeeds. Deleting a user from a server doesn't revoke anything, so that user's ChatGPT may still list remote devices that no longer work.
 
 ## How it works
+
+![ChatGPT on account A connects through the bridge to Codex on account B; both links use OpenAI](docs/assets/how-it-works.en.svg)
 
 The bridge has two kinds of things, and a connection joins them:
 
